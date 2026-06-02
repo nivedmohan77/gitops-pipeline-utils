@@ -65,13 +65,11 @@ chmod +x ./scripts/create-image-pull-secret.sh
 1. **Strict Error Handling:** Scripts utilize `set -euo pipefail` to ensure
 immediate failure visibility if any underlying command or variable pipe breaks
 during execution.
-2. **No Hardcoded Secrets:** All sensitive information (passwords, service
-
-principal keys) is consumed purely via environment variables injected securely by
+2. **No Hardcoded Secrets:** All sensitive information (passwords, service principal keys) is consumed purely via environment variables injected securely by
 the runtime pipeline.
 3. **Lightweight Dependencies:** Built using standard POSIX/Bash commands,
 eliminating the need to install heavy external binaries or tools inside minimal
 pipeline runner agents.
 ---
-�� *Built as an open-source reference tool for automated deployment workflows an
+🚀 *Built as an open-source reference tool for automated deployment workflows an
 GitOps foundations.*
