@@ -16,6 +16,9 @@ git clone "$REPO_URL" /tmp/temp_repo
 # Navigate into the cloned repository directory (and fail safely if it doesn't exist)
 cd /tmp/temp_repo || exit 1
 
+#Switching to main branch
+git checkout main
+
 # Make changes to the Kubernetes manifest file(s)
 # For example, let's say you want to change the image tag in a deployment.yaml file
 sed -i "s|image:.*|image: <ACR-REGISTRY-NAME>/$2:$3|g" k8s-specifications/$1-deployment.yaml
