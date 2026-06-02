@@ -3,7 +3,7 @@ A collection of production-ready Bash utility scripts designed to automate
 Kubernetes manifest updates and credential management within CI/CD pipelines. This
 repository serves as a practical reference architecture for DevOps and Site
 Reliability Engineering (SRE) workflows.
-## �� Core Features
+## 🚀 Core Features
 * **Dynamic Manifest Updating:** Automatically updates container image registries,
 repository names, and version tags within Kubernetes YAML manifests using
 lightweight text processing (`sed`/`awk`).
@@ -13,7 +13,7 @@ container registries like Azure Container Registry (ACR).
 * **Idempotent Execution:** Scripts are designed to safely run multiple times
 without causing duplicate configurations or breaking existing pipeline states.
 ---
-## �� Repository Structure
+## 📁 Repository Structure
 ```text
 ├── scripts/
 │ ├── update-manifest-image.sh # Script to patch image names &amp; tags
@@ -23,7 +23,7 @@ without causing duplicate configurations or breaking existing pipeline states.
 └── README.md
 ```
 ---
-## ��️ Detailed Script Overview
+## 🛠️ Detailed Script Overview
 ### 1. Image Update Automation (`update-manifest-image.sh`)
 This script bridges the gap between your build pipeline (e.g., GitHub Actions,
 GitLab CI, or Azure Pipelines) and your deployment manifests. It dynamically parses
@@ -43,7 +43,7 @@ execution halts.
 * **Multi-Namespace Support:** Easily parameterized to inject secrets across
 different staging or production namespaces.
 ---
-## �� Quick Start &amp; Usage Examples
+## 💻 Quick Start &amp; Usage Examples
 ### Updating a Manifest Image
 Pass the manifest path, your registry URL, application name, and the pipeline build
 tag:
@@ -61,7 +61,7 @@ chmod +x ./scripts/create-image-pull-secret.sh
 &quot;myregistry.azurecr.io&quot; &quot;sp-client-id&quot; &quot;sp-client-secret&quot;
 ```
 ---
-## ��️ Best Practices Demonstrated
+## 🛡️ Best Practices Demonstrated
 1. **Strict Error Handling:** Scripts utilize `set -euo pipefail` to ensure
 immediate failure visibility if any underlying command or variable pipe breaks
 during execution.
