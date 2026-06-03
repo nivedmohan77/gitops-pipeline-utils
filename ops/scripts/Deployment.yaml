@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  labels:
+    app: worker
+  name: worker
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: worker
+  
+  template:
+    metadata:
+      labels:
+        app: worker
+      annotations:
+        azure.workload.identity/use: "true"
+
+    spec:
+      serviceAccountName: voting-app-sa
+      containers:
+      - image: votingappnmeu.azurecr.io/worker-app:31
+        name: worker
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "256Mi" 
