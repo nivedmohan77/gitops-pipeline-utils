@@ -1,0 +1,33 @@
+project: project-app
+source:
+  repoURL: >-
+    https://xyz@dev.azure.com/MyTestOrg077/Votting-App/_git/Votting-App
+  path: k8s-specifications
+  targetRevision: HEAD
+destination:
+  server: https://kubernetes.default.svc
+  namespace: votingapp
+syncPolicy:
+  automated:
+    prune: false
+    selfHeal: false
+    enabled: true
+  syncOptions:
+    - CreateNamespace=true
+  retry:
+    limit: 2
+    backoff:
+      duration: 5s
+      factor: 2
+      maxDuration: 3m0s
+
+ignoreDifferences:
+  - group: apps
+    kind: Deployment # Applies to standard apps (like your voting app, worker, etc.)
+    jsonPointers:
+      - /spec/replicas
+
+  - group: apps
+    kind: StatefulSet # Applies to clustered databases or stateful applications
+    jsonPointers:
+      - /spec/replicas
