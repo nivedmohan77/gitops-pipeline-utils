@@ -1,0 +1,85 @@
+# Docker
+# Build and push an image to Azure Container Registry
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+# Trigering the pipeline only for a specific path of repo
+trigger:
+ paths:
+  include:
+    - worker
+
+
+resources:
+- repo: self
+
+variables:
+  # Container registry service connection established during pipeline creation
+  dockerRegistryServiceConnection: 'd09c225f-be2c-4555-9186-23a3d2d34e66'
+  imageRepository: 'worker-app'
+  containerRegistry: 'votingappnmeu.azurecr.io'
+  dockerfilePath: '$(Build.SourcesDirectory)/result/Dockerfile'
+  tag: '$(Build.BuildId)'
+
+# Selecting the agent as self hosted agent
+pool:
+ name: 'agent-pool-1'
+
+#Building the Docker image
+stages:
+- stage: BuildAndScan
+  displayName: Building and scaning the worker image
+  jobs:
+
+  - job: Build
+    displayName: Build
+# Bulding the Docker image with Dockerfile
+    steps:
+    - task: Docker@2
+      displayName: Building an worker image
+      inputs:
+        containerRegistry: '$(dockerRegistryServiceConnection)'
+        repository: '$(imageRepository)'
+        command: 'build'
+        Dockerfile: '**/worker/Dockerfile'
+        tags: '$(tag)'
+        arguments: '--platform linux'
+
+ # Scaning the newly Build image for vurnerabilties ith Trivy   
+    - task: trivy@2
+      inputs:
+        version: 'latest'
+        type: 'image'
+        target: '$(containerRegistry)/$(imageRepository):$(tag)'
+        scanners: 'vuln'
+        severities: 'CRITICAL'
+        failOnSeverityThreshold: 'CRITICAL'
+        reports: "html"
+        publish: true
+
+# Pushing the Newly build image to the ACR with build tag
+- stage: Push
+  displayName: Pushing the worker image
+  jobs:
+  - job: Push
+    displayName: Pushing to ACR
+    steps:
+    - task: Docker@2
+      displayName: Building an worker image
+      inputs:
+        containerRegistry: '$(dockerRegistryServiceConnection)'
+        repository: '$(imageRepository)'
+        command: 'push'
+        tags: '$(tag)'
+
+# updating the K8s manifiest file to triger the Argo CD sync using shell script
+- stage: Update
+  displayName: Updating the K8s manifeist files
+  jobs:
+  - job: update
+    displayName: Updating the K8s manifeist
+    steps:
+    - task: ShellScript@2
+      inputs:
+        scriptPath: 'ops/update-k8s-manifiest.sh'
+        args: 'worker $(imageRepository) $(tag)'
+
