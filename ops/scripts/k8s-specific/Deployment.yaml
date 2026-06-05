@@ -1,33 +1,40 @@
 apiVersion: apps/v1
 kind: Deployment
-
+# iinfo about the deployments 
 metadata:
   labels:
     app: worker
   name: worker
-
+# Specifying the details of deployment.
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: worker
-  
+ # Adding the pod yaml to the deployment 
   template:
     metadata:
       labels:
         app: worker
       annotations:
         azure.workload.identity/use: "true"
-
+# Adding pod yaml specification
     spec:
       serviceAccountName: voting-app-sa
       containers:
       - image: votingappnmeu.azurecr.io/worker-app:31
         name: worker
+# Ading the CPU limit and max increase for the pod
         resources:
           requests:
             cpu: "100m"
             memory: "128Mi"
           limits:
             cpu: "500m"
-            memory: "256Mi" 
+            memory: "256Mi"
+# Adding the tain & toleration for the pod
+      tolerations:
+        - key: "node"
+          operator: "Equal"
+          value: "nonagent"
+          effect: "NoSchedule"
